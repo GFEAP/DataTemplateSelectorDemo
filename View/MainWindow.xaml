@@ -1,0 +1,93 @@
+﻿<Window x:Class="TemplateSelectorDemo.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TemplateSelectorDemo"
+        xmlns:vw="clr-namespace:TemplateSelectorDemo.View"
+        xmlns:sel="clr-namespace:TemplateSelectorDemo.Selector"
+        mc:Ignorable="d"
+        Title="Template Selector Demo" Height="450" Width="800">
+    <Window.Resources>
+        <sel:DemoTemplateSelector x:Key="TemplateSelector"/>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Close" Command="{Binding CloseWindowCommand}"/>
+            <MenuItem Header="View A" Command="{Binding SelectACommand}"/>
+            <MenuItem Header="View B" Command="{Binding SelectBCommand}"/>
+        </Menu>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>                
+            </Grid.RowDefinitions>
+            <Label  Grid.Row="0" Grid.Column="0" Content="CurrentView" FontSize="14" FontWeight="Bold"/>
+            <Label  Grid.Row="0" Grid.Column="1" Content="SelectedView" FontSize="14" FontWeight="Bold"/>
+            <Border Grid.Row="1" Grid.Column="0" BorderThickness="3" CornerRadius="4" BorderBrush="Blue">
+                <Label Content="{Binding CurrentViewModel}">
+                    <Label.ContentTemplateSelector>
+                        <sel:DemoTemplateSelector>
+                            <sel:DemoTemplateSelector.TemplateA>
+                                <DataTemplate>
+                                    <vw:AViewUserControl/>
+                                </DataTemplate>
+                            </sel:DemoTemplateSelector.TemplateA>
+                            <sel:DemoTemplateSelector.TemplateB>
+                                <DataTemplate>
+                                    <vw:BViewUserControl/>
+                                </DataTemplate>
+                            </sel:DemoTemplateSelector.TemplateB>
+                        </sel:DemoTemplateSelector>
+                    </Label.ContentTemplateSelector>
+                </Label>
+            </Border>
+            <Border Grid.Row="1" Grid.Column="1" BorderThickness="3" CornerRadius="4" BorderBrush="Green">
+                <Label Content="{Binding SelectedViewModel}">
+                    <Label.ContentTemplateSelector>
+                        <sel:DemoTemplateSelector>
+                            <sel:DemoTemplateSelector.TemplateA>
+                                <DataTemplate>
+                                    <vw:AViewUserControl/>
+                                </DataTemplate>
+                            </sel:DemoTemplateSelector.TemplateA>
+                            <sel:DemoTemplateSelector.TemplateB>
+                                <DataTemplate>
+                                    <vw:BViewUserControl/>
+                                </DataTemplate>
+                            </sel:DemoTemplateSelector.TemplateB>
+                        </sel:DemoTemplateSelector>
+                    </Label.ContentTemplateSelector>
+                </Label>
+            </Border>
+        </Grid>      
+        <Label DockPanel.Dock="Top" Content="View History" FontSize="14" FontWeight="Bold"/>
+        <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" Grid.IsSharedSizeScope="True">
+            <ListView ItemsSource="{Binding ViewModelsCollection}" 
+                      SelectedItem="{Binding SelectedViewModel}">
+                <ListView.ItemTemplateSelector>
+                    <sel:DemoTemplateSelector>
+                        <sel:DemoTemplateSelector.TemplateA>
+                            <DataTemplate>
+                                <Border CornerRadius="5" BorderThickness="3" BorderBrush="Gold">
+                                    <vw:AViewUserControl/>
+                                </Border>
+                            </DataTemplate>
+                        </sel:DemoTemplateSelector.TemplateA>
+                        <sel:DemoTemplateSelector.TemplateB>
+                            <DataTemplate>
+                                <Border CornerRadius="5" BorderThickness="3" BorderBrush="ForestGreen">
+                                    <vw:BViewUserControl/>
+                                </Border>
+                            </DataTemplate>
+                        </sel:DemoTemplateSelector.TemplateB>
+                    </sel:DemoTemplateSelector>
+                </ListView.ItemTemplateSelector>
+            </ListView>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
