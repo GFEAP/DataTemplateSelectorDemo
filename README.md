@@ -200,10 +200,12 @@ Now the content of the _Label_ changes with the data type of the property in our
 ## Conclusion ##
 The crucial steps to select the view you wish to display your data are:
 * Define your data
-** Make them convertible
+> Make them convertible
 * Create a class derrived from DataTemplateSelector
-** Override the SelectTemplate method
+> Override the SelectTemplate method
 * Declare the xml namespaces in your main view
-** Choose a FrameworkElement having the Content propperty
-** Give the content a ContentTemplateSelector based on your implementation of the DataTemplateSelector
-** In that ContentTemplateSelector you can create your DataTemplates inline or using UserControls
+> Choose a _FrameworkElement_ having the _Content_ property
+> 
+> Give the Content a _ContentTemplateSelector_ based on your implementation of the _DataTemplateSelector_
+> 
+> In that ContentTemplateSelector block you can create your _DataTemplates_ inline or using UserControls
