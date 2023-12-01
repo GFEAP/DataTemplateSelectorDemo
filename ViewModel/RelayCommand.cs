@@ -6,6 +6,9 @@ namespace TemplateSelectorDemo.ViewModel
 {   
     /// <summary>
     /// https://msdn.microsoft.com/en-us/magazine/dd419663.aspx#id0090030
+    /// For a simple project like this creating a base class is fine.
+    /// Do not take it any further, use a proven and tested framework
+    /// like CommunityToolkit.Mvvm
     /// </summary>
     public class RelayCommand : ICommand
     {
