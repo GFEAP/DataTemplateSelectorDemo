@@ -1,21 +1,28 @@
-# DataTemplateSelectorDemo
-Demonstrates DataTemplateSelector
+# DataTemplateSelectorDemo+
+
+Demonstrates how to use DataTemplateSelector to create a data-aware user interface in XAML
+
+***
+
 In Xaml we can use _type-driven_ views by mapping a __view__ to a ___data type___.
 The UI is then able to insert the desired DataTemplate e.g. a _UserControl_ into the VisualTree 
 of the current view based on the data-type it is bound to.
 
-The tool that use to implement such behavior is the DataTemplateSelector
+The tool that use to implement such behavior is the _DataTemplateSelector
 To help students understand how to employ DataTemplateSelector this project
 demonstrates the basics. 
 
-There are two parts in order to realize the _"data-awareness"_ in your application.
+There are two parts in order to realize the _'data-awareness'_ in your application.
 
-#Implement data templates in your main view
+#Implement data templates in your main view#
+
 You need a FrameworkElement which can bind to a DependencyProperty and is able to host a content.
 One such FrameworkElement is the __Label__.
-The Label has an AttachedProperty "Content" which we can either 'hard-code' in XAML or
+The __Label__ element has an AttachedProperty __Content__ which we can either 'hard-code' in XAML or
 make use of the __ContentTemplateSelector__.
-We provide a class derrived from DataTemplateSelector which decides based on the type of data what DataTemplate to use.
+
+After defining our view models, we create a class derrived from DataTemplateSelector which decides 
+based on the type of data which DataTemplate to use.
 
 
 ```csharp
@@ -23,9 +30,19 @@ We provide a class derrived from DataTemplateSelector which decides based on the
 ```
 
 It's interface to the VisualTree is the method __SelectTemplate__; based on the data type supplied it returns a _DataTemplate_.
-
 This DataTemplate is __not__ a view or UserControl! It does not posses a VisualTree, we provide that DataTemplate either 'inline' or
 we use a UserControl in our project.
+
+The syntax is basically:
+
+ElementWithContent.ContentTemplateSelector
+    myTemplateSelector
+        myTemplateSelector.Template1
+            DataTemplate1
+        myTemplateSelector.Template2
+            DataTemplate2
+
+where _DataTemplate1_ is what you implement when the selector tells you: 'Based on the data-type supplied I consider _Template1_ being the right fit'.
 
 ```xaml
  <Label Content="{Binding CurrentViewModel}">
