@@ -1,6 +1,6 @@
 # DataTemplateSelectorDemo+
 
-Demonstrates how to use DataTemplateSelector to create a data-aware user interface in XAML
+Demonstrates how to use __DataTemplateSelector__ to create a data-aware user interface in XAML
 
 ***
 
@@ -8,24 +8,42 @@ In Xaml we can use _type-driven_ views by mapping a __view__ to a ___data type__
 The UI is then able to insert the desired DataTemplate e.g. a _UserControl_ into the VisualTree 
 of the current view based on the data-type it is bound to.
 
-To help students understand how to employ DataTemplateSelector this project
-demonstrates the basics. Play with your own ideas. You will figure it out.
+To help beginners understand how to employ this powerful _DataTemplateSelector_ this project
+demonstrates some basics. They get you started. Play with your own ideas. You will figure it out.
   
+So, we have a project with different types of data, each requiring a specific way of presention.
 
-The tool that implements such behavior is the _DataTemplateSelector
+For example, if you have different types of 'person records' each specialized on say clients or customers,
+you may want to use a specific 'mask'. One may focus on CRM, the other on purchasing.
+In WPF we can do this.
 
-There are two parts in order to realize the _'data-awareness'_ in your application.
+The pivot to implementing such behavior is the _DataTemplateSelector_.
+
+There are two parts in order to realize the _'data-awareness'_ in our application.
 
 #Implement data templates in your main view#
 
 You need a FrameworkElement which can bind to a DependencyProperty and is able to host a content.
-One such FrameworkElement is the __Label__.
+One such FrameworkElement is the __Label__. There are others. Check your WPF tool case. 
 The __Label__ element has an AttachedProperty __Content__ which we can either 'hard-code' in XAML or
 make use of the __ContentTemplateSelector__.
 
-After defining our view models, we create a class derrived from DataTemplateSelector which decides 
-based on the type of data which DataTemplate to use.
+First, let's create the types we seek to use in our project. Since we use a _Binding_ to bring data into our view,
+it is considerate to go with the MVVM pattern. Model View ViewModel. In this simple project, we amalgamate model and viewmodel.
+After having defines our view models, we do create a class derrived from DataTemplateSelector.
+It's task is to decide which DataTemplate to use based on the type of data in the ViewModel.
+Needless to say, the types (classes) must be convertable into each other. If they a descendend from on __object__, we're good.
 
+
+```csharp
+    // this is in your main view model
+    private object currentViewModel;
+    public object CurrentViewModel {get => currentViewModel; set => SetProperty(currentViewModel, value, ()=> currentViewModel = x);  
+```
+
+Hint: Mind the casing of your fields and properties. A 'get => __C__urrentViewModel' sends your app in an endless loop.
+It's 'get => __c__urrentViewModel'.
+Especially in the early morning hours after a lengthy coding session, this error might elude you. 
 
 ```csharp
     public override DataTemplate SelectTemplate(object item, DependencyObject container)
