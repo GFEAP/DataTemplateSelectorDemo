@@ -197,11 +197,13 @@ In xaml the equivalent would be:
 
 Now the content of the _Label_ changes with the data type of the property in our ViewModel "CurrentViewModel", bound to the Content of the Label.
 
-##Conclusion
+## Conclusion ##
 The crucial steps to select the view you wish to display your data are:
+* Define your data
+** Make them convertible
 * Create a class derrived from DataTemplateSelector
-* Override the SelectTemplate method
+** Override the SelectTemplate method
 * Declare the xml namespaces in your main view
-* Choose a FrameworkElement having the Content propperty
-* Give the content a ContentTemplateSelector based on your implementation of the DataTemplateSelector
-* In that ContentTemplateSelector you can create your DataTemplates inline or using UserControls
+** Choose a FrameworkElement having the Content propperty
+** Give the content a ContentTemplateSelector based on your implementation of the DataTemplateSelector
+** In that ContentTemplateSelector you can create your DataTemplates inline or using UserControls
