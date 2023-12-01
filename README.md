@@ -20,7 +20,7 @@ We provide a class derrived from DataTemplateSelector which decides based on the
 
 ```csharp
     public override DataTemplate SelectTemplate(object item, DependencyObject container)
-
+```
 It's interface to the VisualTree is the method __SelectTemplate__; based on the data type supplied it returns a _DataTemplate_.
 
 This DataTemplate is __not__ a view or UserControl! It does not posses a VisualTree, we provide that DataTemplate either 'inline' or
@@ -43,29 +43,31 @@ we use a UserControl in our project.
               </sel:DemoTemplateSelector>
           </Label.ContentTemplateSelector>
       </Label>
+```
 
-Where does the xmlns 'sel' come from?
+Now, where does the xmlns 'sel' come from?
 
 In our example view _MainView_ we create an instance of our DemoDataSelector class by putting it in the window's resources.
 ```xaml
     <Window.Resources>
         <sel:DemoTemplateSelector x:Key="TemplateSelector"/>
     </Window.Resources>
-
+```
 This is equivalent to:
 
 ```csharp
     public DemoTemplateSelector DemoTemplateSelector = new DemoTemplateSelector();
+```
 
 When we refer to another namespace in code, we include that by including the using directive on top of our file:
 ```csharp
     using TemplateSelectorDemo.Selector;
-
+```
 In xaml the equivalent would be:
 
 ```xaml    
     xmlns:sel="clr-namespace:TemplateSelectorDemo.Selector"
-
+```
 Now the content of the _Label_ changes with the data type of the property in our ViewModel "CurrentViewModel", bound to the Content of the Label.
 
 ##Conclusion
