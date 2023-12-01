@@ -61,7 +61,7 @@ This is equivalent to:
     public DemoTemplateSelector DemoTemplateSelector = new DemoTemplateSelector();
 ```
 
-When we refer to another namespace in code, we include that by including the using directive on top of our file:
+When we refer to another namespace in code, we achieve that by including the __using__ directive on top of our file:
 
 ```csharp
     using TemplateSelectorDemo.Selector;
