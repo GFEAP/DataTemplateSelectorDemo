@@ -21,6 +21,7 @@ We provide a class derrived from DataTemplateSelector which decides based on the
 ```csharp
     public override DataTemplate SelectTemplate(object item, DependencyObject container)
 ```
+
 It's interface to the VisualTree is the method __SelectTemplate__; based on the data type supplied it returns a _DataTemplate_.
 
 This DataTemplate is __not__ a view or UserControl! It does not posses a VisualTree, we provide that DataTemplate either 'inline' or
@@ -53,6 +54,7 @@ In our example view _MainView_ we create an instance of our DemoDataSelector cla
         <sel:DemoTemplateSelector x:Key="TemplateSelector"/>
     </Window.Resources>
 ```
+
 This is equivalent to:
 
 ```csharp
@@ -60,14 +62,17 @@ This is equivalent to:
 ```
 
 When we refer to another namespace in code, we include that by including the using directive on top of our file:
+
 ```csharp
     using TemplateSelectorDemo.Selector;
 ```
+
 In xaml the equivalent would be:
 
 ```xaml    
     xmlns:sel="clr-namespace:TemplateSelectorDemo.Selector"
 ```
+
 Now the content of the _Label_ changes with the data type of the property in our ViewModel "CurrentViewModel", bound to the Content of the Label.
 
 ##Conclusion
@@ -78,4 +83,3 @@ The crucial steps to select the view you wish to display your data are:
 * Choose a FrameworkElement having the Content propperty
 * Give the content a ContentTemplateSelector based on your implementation of the DataTemplateSelector
 * In that ContentTemplateSelector you can create your DataTemplates inline or using UserControls
-</li>
