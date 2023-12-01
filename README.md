@@ -21,27 +21,36 @@ In WPF we can do this.
 
 The pivot to implementing such behavior is the _DataTemplateSelector_.
 
-There are two parts in order to realize the _'data-awareness'_ in our application.
+There are three simple steps to realize the _'data-awareness'_ in our application.
 
 # Define the data
 
 First, let's create the types we seek to use in our project. Since we use a _Binding_ to bring data into our view,
-it is considerate to go with the MVVM pattern. The holy trinity Model, View, ViewModel. In this simple project, we amalgamate model and viewmodel.
+it is considerate to go with the MVVM pattern. The holy trinity Model, View, ViewModel. In this simple project, we amalgamate model and viewmodel. Econimize on classes.
 As long as this classes implement the INotifyPropertyChanged interface, they will work.
 
 We recommend to avoid the hazzle of creating your own MVVM framework. We did that. Now we use __CommunityToolkit.Mvvm__. There are others. Find what suits you best.
 
-# Create the doocot - pidgeon hole the data types using the TemplateSelector
+Now somewhere in our code we will retrieve data and present it to the user.
 
-After having defined our view models, we create a class derrived from DataTemplateSelector.
-It's task is to decide which DataTemplate to use based on the type of data in the ViewModel.
-Needless to say, the types (classes) must be convertable into each other. If they descend from e.g. __object__, we're good.
-To be more practical, we could have a base class 'PersonBase' of which we derrive 'Client' and 'Supplier'.
+We have one view with controls and menues, bells and whistles - e.g. our main window. That view should be able to display different type of data, shouldn't it?
+
+Let's use a property to bind the data to the view. Then let's assign the data retrieved to that property. They are of different types?
+
+Can an ant become an elephant? Can a car become a bicycle? Chances are they can. Provided the types (classes) are convertable into each other.
+
+If they descend from e.g. __object__, we're good. If _Ant_ and _Elephant_ are descendents of class _Animal_, that will do. Car and Bicycle are both _Vehicles_? Fine.
+
+Let's illustrate that in c#: We have a base class 'Person' of which we derrive 'Client' and 'Supplier'. class Client : Person. class Supplier : Person.
+
+The 'proxy' to the view is _CurrentViewModel_. It is a person. A person can become a Client or a Supplier. A Vehicle can be Car or a Bicycle. An Ant may identify as an Elepfhnat. Which is somehow related to an elephant. Or a typo. Blame me.
+
+In our main view model we do something like this:
 
 ```csharp
     // this is in your main view model
-    private PersonBase currentViewModel;
-    public PersonBase CurrentViewModel { get => currentViewModel; set => SetProperty(currentViewModel, value, ()=> currentViewModel = x); }
+    private Person currentViewModel;
+    public Person CurrentViewModel { get => currentViewModel; set => SetProperty(currentViewModel, value, ()=> currentViewModel = x); }
 
     private Client client;
     public Client Client {get => client; set => SetProperty(client, value, ()=> client = x);
@@ -63,12 +72,51 @@ To be more practical, we could have a base class 'PersonBase' of which we derriv
 ```
 
 Hint: Mind the casing of your fields and properties. A 'get => __C__ urrentViewModel' sends your app in an endless loop.
-It's 'get => __c__ urrentViewModel'.
+'get => __c__ urrentViewModel' it is. C and c. Different. 
 
-Especially in the early morning hours after a lengthy coding session, this error might elude you. 
+Especially in the early morning hours after a lengthy coding session, this error might elude you. Go to bed. Sleep. Wake up, find the problem in a minute. That's software engineering.
+
+# Create the doocot - pidgeonhole the data types using the TemplateSelector
+
+After having defined our data types in our view models, we create now a new class derrived from DataTemplateSelector.
+It's task is to decide which DataTemplate to use based on the type of data in the ViewModel.
+
+There is a method we need to override.
 
 ```csharp
     public override DataTemplate SelectTemplate(object item, DependencyObject container)
+```
+
+Our view will inquier what DataTemplate to use by sending the FrameworkElement 'container' in question along with the data 'item'.
+
+SelectTemplate pideonholes the item returning the hole it went in. 
+
+```csharp
+﻿using System.Windows;
+using System.Windows.Controls;
+using TemplateSelectorDemo.ViewModel;
+
+namespace TemplateSelectorDemo.Selector
+{
+   public class DemoTemplateSelector:DataTemplateSelector
+    {
+        public DataTemplate TemplateA { get; set; }
+        public DataTemplate TemplateB { get; set; }        
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            if (container is FrameworkElement && item != null)
+            {
+                if (item is AViewModel)
+                    return TemplateA;
+
+                if (item is BViewModel)
+                    return TemplateB;
+                else return null;
+            }
+            return null;
+        }
+    }
+}
 ```
 
 # Implement data templates in your main view #
@@ -78,25 +126,28 @@ One such FrameworkElement is the __Label__. There are others. Check your WPF too
 The __Label__ element has an AttachedProperty __Content__ which we can either 'hard-code' in XAML or
 make use of the __ContentTemplateSelector__.
 
+We have created such TemplateSelector above.
 Its interface to the VisualTree is the method __SelectTemplate__; based on the data type supplied it returns a _DataTemplate_.
+
 This DataTemplate is __not__ a view or UserControl! It does not posses a VisualTree, we provide that DataTemplate either 'inline' or
 we use a UserControl in our project.
 
 The syntax is basically:
 
-ElementWithContent.ContentTemplateSelector
+    ElementWithContent.ContentTemplateSelector
 
-    myTemplateSelector
+        myTemplateSelector
     
-        myTemplateSelector.Template1
+            myTemplateSelector.Template1
         
-            DataTemplate1
+                DataTemplate1
             
-        myTemplateSelector.Template2
+            myTemplateSelector.Template2
         
-            DataTemplate2
+                DataTemplate2
 
 where _DataTemplate1_ is what you implement when the selector tells you: 'Based on the data-type supplied I consider _Template1_ being the right fit'.
+
 
 ```xaml
  <Label Content="{Binding CurrentViewModel}">
