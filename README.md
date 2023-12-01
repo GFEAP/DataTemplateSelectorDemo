@@ -4,7 +4,8 @@ Demonstrates how to use __DataTemplateSelector__ to create a data-aware user int
 
 ***
 
-In Xaml we can use _type-driven_ views by mapping a __view__ to a ___data type___.
+In WPF we can use _type-dependant_ views by mapping a ___data type___ to a __data presentation__.
+
 The UI is then able to insert the desired DataTemplate e.g. a _UserControl_ into the VisualTree 
 of the current view based on the data-type it is bound to.
 
@@ -22,18 +23,15 @@ The pivot to implementing such behavior is the _DataTemplateSelector_.
 
 There are two parts in order to realize the _'data-awareness'_ in our application.
 
-#Implement data templates in your main view#
-
-You need a FrameworkElement which can bind to a DependencyProperty and is able to host a content.
-One such FrameworkElement is the __Label__. There are others. Check your WPF tool case. 
-The __Label__ element has an AttachedProperty __Content__ which we can either 'hard-code' in XAML or
-make use of the __ContentTemplateSelector__.
+# Define the data
 
 First, let's create the types we seek to use in our project. Since we use a _Binding_ to bring data into our view,
 it is considerate to go with the MVVM pattern. The holy trinity Model, View, ViewModel. In this simple project, we amalgamate model and viewmodel.
 As long as this classes implement the INotifyPropertyChanged interface, they will work.
 
 We recommend to avoid the hazzle of creating your own MVVM framework. We did that. Now we use __CommunityToolkit.Mvvm__. There are others. Find what suits you best.
+
+# Create the doocot - pidgeon hole the data types using the TemplateSelector
 
 After having defined our view models, we create a class derrived from DataTemplateSelector.
 It's task is to decide which DataTemplate to use based on the type of data in the ViewModel.
@@ -43,7 +41,7 @@ To be more practical, we could have a base class 'PersonBase' of which we derriv
 ```csharp
     // this is in your main view model
     private PersonBase currentViewModel;
-    public PersonBase CurrentViewModel {get => currentViewModel; set => SetProperty(currentViewModel, value, ()=> currentViewModel = x);
+    public PersonBase CurrentViewModel { get => currentViewModel; set => SetProperty(currentViewModel, value, ()=> currentViewModel = x); }
 
     private Client client;
     public Client Client {get => client; set => SetProperty(client, value, ()=> client = x);
@@ -53,29 +51,49 @@ To be more practical, we could have a base class 'PersonBase' of which we derriv
 
     private void GetSupplier
     {
-        CurrentViewModel
+        Supplier = PersonFactory.GetSupplier();
+        CurrentViewModel = Supplier;
+    }
 
+    private void GetClient
+    {
+        Client = PersonFactory.GetClient();
+        CurrentViewModel = Client;
+    }
 ```
 
-Hint: Mind the casing of your fields and properties. A 'get => __C__urrentViewModel' sends your app in an endless loop.
-It's 'get => __c__urrentViewModel'.
+Hint: Mind the casing of your fields and properties. A 'get => __C__ urrentViewModel' sends your app in an endless loop.
+It's 'get => __c__ urrentViewModel'.
+
 Especially in the early morning hours after a lengthy coding session, this error might elude you. 
 
 ```csharp
     public override DataTemplate SelectTemplate(object item, DependencyObject container)
 ```
 
-It's interface to the VisualTree is the method __SelectTemplate__; based on the data type supplied it returns a _DataTemplate_.
+# Implement data templates in your main view #
+
+We need a FrameworkElement which can bind to a DependencyProperty and is able to host a content.
+One such FrameworkElement is the __Label__. There are others. Check your WPF tool case. 
+The __Label__ element has an AttachedProperty __Content__ which we can either 'hard-code' in XAML or
+make use of the __ContentTemplateSelector__.
+
+Its interface to the VisualTree is the method __SelectTemplate__; based on the data type supplied it returns a _DataTemplate_.
 This DataTemplate is __not__ a view or UserControl! It does not posses a VisualTree, we provide that DataTemplate either 'inline' or
 we use a UserControl in our project.
 
 The syntax is basically:
 
 ElementWithContent.ContentTemplateSelector
+
     myTemplateSelector
+    
         myTemplateSelector.Template1
+        
             DataTemplate1
+            
         myTemplateSelector.Template2
+        
             DataTemplate2
 
 where _DataTemplate1_ is what you implement when the selector tells you: 'Based on the data-type supplied I consider _Template1_ being the right fit'.
@@ -114,7 +132,7 @@ This is equivalent to:
     public DemoTemplateSelector DemoTemplateSelector = new DemoTemplateSelector();
 ```
 
-When we refer to another namespace in code, we achieve that by including the __using__ directive on top of our file:
+When we refer to another namespace in code, we achieve that by including the  __using__  directive on top of our file:
 
 ```csharp
     using TemplateSelectorDemo.Selector;
